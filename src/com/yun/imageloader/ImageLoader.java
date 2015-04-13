@@ -159,7 +159,12 @@ public class ImageLoader {
 			}
 			super.handleMessage(msg);
 		}
-
 	};
+	public void stopAllLoad(){
+		executorServie.shutdownNow();
+	}
+	public void clearDiskLruCache(){
+		diskLruCache.clearCache();
+	}
 
 }
