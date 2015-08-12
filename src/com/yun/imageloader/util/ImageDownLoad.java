@@ -14,10 +14,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 
 /**
- * Í¼Æ¬ÏÂÔØ
+ * å›¾ç‰‡ä¸‹è½½
  * 
  * @author yunye
  * 
@@ -37,18 +36,16 @@ public class ImageDownLoad {
 				} else {
 					try {
 						byte[] data = readStream(is);
-						if (data != null) {
-							BitmapFactory.Options options = new BitmapFactory.Options();
-							options.inJustDecodeBounds = true;
-							BitmapFactory.decodeStream(is,
-									new Rect(0, 0, 0, 0), options);
-							options.inSampleSize = width / options.outWidth >= height
-									/ options.outHeight ? width
-									/ options.outWidth : options.outHeight;
-							options.inJustDecodeBounds = false;
-							bitmap = BitmapFactory.decodeByteArray(data, 0,
-									data.length, options);
-						}
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inJustDecodeBounds = true;
+						BitmapFactory.decodeByteArray(data, 0, data.length,
+								options);
+						options.inSampleSize = options.outWidth / width >= options.outHeight
+								/ height ? options.outWidth / width
+								: options.outHeight / height;
+						options.inJustDecodeBounds = false;
+						bitmap = BitmapFactory.decodeByteArray(data, 0,
+								data.length, options);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -65,7 +62,7 @@ public class ImageDownLoad {
 	}
 
 	/*
-	 * µÃµ½Í¼Æ¬×Ö½ÚÁ÷ Êı×é´óĞ¡
+	 * å¾—åˆ°å›¾ç‰‡å­—èŠ‚æµ æ•°ç»„å¤§å°
 	 */
 	public byte[] readStream(InputStream inStream) throws Exception {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
