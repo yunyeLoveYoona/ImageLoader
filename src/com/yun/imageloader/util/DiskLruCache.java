@@ -610,6 +610,7 @@ public final class DiskLruCache implements Closeable {
         if (size > maxSize || journalRebuildRequired()) {
             executorService.submit(cleanupCallable);
         }
+        journalWriter.flush();
     }
 
     /**
