@@ -18,19 +18,19 @@ import com.yun.imageloader.util.ImageDiskLruCache;
 import com.yun.imageloader.util.LoadRunnable;
 
 /**
- * Í¼Æ¬¼ÓÔØ»º´æ Ê¹ÓÃÁËÄÚ´æ»º´æºÍ´ÅÅÌ»º´æ ¿ÉÒÔ¼ÓÔØÍøÂçÍ¼Æ¬£¬Ò²¿É¼ÓÔØ±¾µØÍ¼Æ¬
+ * å›¾ç‰‡åŠ è½½ç¼“å­˜ ä½¿ç”¨äº†å†…å­˜ç¼“å­˜å’Œç£ç›˜ç¼“å­˜ å¯ä»¥åŠ è½½ç½‘ç»œå›¾ç‰‡ï¼Œä¹Ÿå¯åŠ è½½æœ¬åœ°å›¾ç‰‡
  * 
  * @author yunye
  * 
  */
 public class ImageLoader {
 	private static ImageLoader imageLoader;
-	private final int LOAD_COUNT = 5;// Í¬Ê±¼ÓÔØÍ¼Æ¬µÄ×î´óÏß³ÌÊý
+	private final int LOAD_COUNT = 5;// åŒæ—¶åŠ è½½å›¾ç‰‡çš„æœ€å¤§çº¿ç¨‹æ•°
 	private ExecutorService executorServie;
 	private final int DEFAULT_WIDTH = 150;
 	private final int DEFAULT_HEIGHT = 150;
 	private ImageDiskLruCache diskLruCache;
-
+	private Resources resources;
 	public static ImageLoader getInstance(Context context) {
 		if (imageLoader == null) {
 			imageLoader = new ImageLoader(context);
@@ -42,6 +42,7 @@ public class ImageLoader {
 		executorServie = Executors.newFixedThreadPool(LOAD_COUNT);
 		diskLruCache = new ImageDiskLruCache(context, "image",
 				50 * 1024 * 1024, CompressFormat.JPEG, 100);
+		resources = context.getResources();
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround,
@@ -146,6 +147,20 @@ public class ImageLoader {
 				: DEFAULT_WIDTH,
 				imageView.getHeight() > 0 ? imageView.getHeight()
 						: DEFAULT_HEIGHT, isCache, null);
+	}
+	public void loadLocal(View view, int resource) {
+		int width = view.getWidth() > 0 ? view.getWidth() : DEFAULT_WIDTH;
+		int height = view.getHeight() > 0 ? view.getHeight() : DEFAULT_HEIGHT;
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeResource(resources, resource, options);
+		options.inSampleSize = options.outWidth / width >= options.outHeight
+				/ height ? options.outWidth / width : options.outHeight
+				/ height;
+		options.inJustDecodeBounds = false;
+		Bitmap bitmap = BitmapFactory.decodeResource(resources, resource,
+				options);
+		view.setBackgroundDrawable(new BitmapDrawable(bitmap));
 	}
 
 	private Handler handler = new Handler(Looper.getMainLooper()) {
