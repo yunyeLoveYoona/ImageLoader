@@ -176,6 +176,7 @@ public class ImageLoader {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeResource(resources, resource, options);
+		if(width!=0&&height!=0)
 		options.inSampleSize = options.outWidth / width >= options.outHeight
 				/ height ? options.outWidth / width : options.outHeight
 				/ height;
