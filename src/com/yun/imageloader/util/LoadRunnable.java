@@ -59,7 +59,10 @@ public class LoadRunnable implements Runnable {
 					@Override
 					public void run() {
 						if (bitmap == null && errorImage != null) {
-							imageView.setImageDrawable(errorImage);
+						       if (errorImage != null)
+								imageView.setImageDrawable(errorImage);
+							else if (defaultBackround != 0)
+								imageView.setImageResource(defaultBackround);
 							imageView = null;
 							errorImage = null;
 						} else {
