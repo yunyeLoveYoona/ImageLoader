@@ -52,7 +52,11 @@ public class ImageLoader {
 	public void load(ImageView imageView, String url, int defaultBackround,
 			int width, int height, boolean isCache, final Drawable errorImage) {
 		if (url == null || !url.contains("http://")) {
-			imageView.setBackgroundDrawable(errorImage);
+	         	if (errorImage != null) {
+				imageView.setBackgroundDrawable(errorImage);
+			} else if (defaultBackround != 0) {
+				imageView.setImageResource(defaultBackround);
+			}
 		} else {
 			if (NativeImageLoader.getInstance().getBitmapFromMemCache(url) != null) {
 				imageView.setImageBitmap(NativeImageLoader.getInstance()
