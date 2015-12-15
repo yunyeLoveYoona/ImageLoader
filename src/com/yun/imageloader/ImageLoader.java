@@ -28,7 +28,7 @@ import com.yun.imagescan.NativeImageLoader;
  */
 public class ImageLoader {
 	private static ImageLoader imageLoader;
-	private final int LOAD_COUNT = 5;// 同时加载图片的最大线程数
+	private final int LOAD_COUNT = 1;// 同时加载图片的最大线程数
 	private ExecutorService executorServie;
 	private final int DEFAULT_WIDTH = 0;
 	private final int DEFAULT_HEIGHT = 0;
@@ -51,18 +51,16 @@ public class ImageLoader {
 
 	public void load(ImageView imageView, String url, int defaultBackround,
 			int width, int height, boolean isCache, final Drawable errorImage) {
-		if (url == null || !url.contains("http://")) {
-	         	if (errorImage != null) {
-				imageView.setBackgroundDrawable(errorImage);
-			} else if (defaultBackround != 0) {
-				imageView.setImageResource(defaultBackround);
-			}
+		if (url == null || !url.contains("http://") && errorImage != null) {
+			imageView.setImageDrawable(errorImage);
 		} else {
-			if (NativeImageLoader.getInstance().getBitmapFromMemCache(url) != null) {
+			if (NativeImageLoader.getInstance().getBitmapFromMemCache(
+					url + width + "*" + height) != null) {
 				imageView.setImageBitmap(NativeImageLoader.getInstance()
-						.getBitmapFromMemCache(url));
-			} else if (diskLruCache.containsKey(url)) {
-				imageView.setImageBitmap(diskLruCache.getBitmap(url));
+						.getBitmapFromMemCache(url + width + "*" + height));
+			} else if (diskLruCache.containsKey(url + width + "*" + height)) {
+				imageView.setImageBitmap(diskLruCache.getBitmap(url + width
+						+ "*" + height));
 			} else {
 				if (defaultBackround != 0) {
 					imageView.setImageResource(defaultBackround);
@@ -96,10 +94,14 @@ public class ImageLoader {
 	}
 
 	public void load(ImageView imageView, String url, Drawable errorImage) {
-		load(imageView, url, 0, imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width
-				: DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, false, errorImage);
+		load(imageView,
+				url,
+				0,
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, false,
+				errorImage);
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround,
@@ -107,17 +109,23 @@ public class ImageLoader {
 		load(imageView,
 				url,
 				defaultBackround,
-				imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width : DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, false, errorImage);
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, false,
+				errorImage);
 	}
 
 	public void load(ImageView imageView, String url, Drawable errorImage,
 			boolean isCache) {
-		load(imageView, url, 0, imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width
-				: DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, isCache, errorImage);
+		load(imageView,
+				url,
+				0,
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, isCache,
+				errorImage);
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround,
@@ -125,9 +133,11 @@ public class ImageLoader {
 		load(imageView,
 				url,
 				defaultBackround,
-				imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width : DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, isCache, null);
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, isCache,
+				null);
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround,
@@ -135,9 +145,11 @@ public class ImageLoader {
 		load(imageView,
 				url,
 				defaultBackround,
-				imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width : DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, isCache, errorImage);
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, isCache,
+				errorImage);
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround,
@@ -150,26 +162,34 @@ public class ImageLoader {
 	}
 
 	public void load(ImageView imageView, String url) {
-		load(imageView, url, 0, imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width
-				: DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, false, null);
+		load(imageView,
+				url,
+				0,
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, false, null);
 	}
 
 	public void load(ImageView imageView, String url, int defaultBackround) {
 		load(imageView,
 				url,
 				defaultBackround,
-				imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width : DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, false, null);
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, false, null);
 	}
 
 	public void load(ImageView imageView, String url, boolean isCache) {
-		load(imageView, url, 0, imageView.getLayoutParams().width > 0 ? imageView.getLayoutParams().width
-				: DEFAULT_WIDTH,
-				imageView.getLayoutParams().height > 0 ? imageView.getLayoutParams().height
-						: DEFAULT_HEIGHT, isCache, null);
+		load(imageView,
+				url,
+				0,
+				imageView.getLayoutParams().width > 0 ? imageView
+						.getLayoutParams().width : DEFAULT_WIDTH,
+				imageView.getLayoutParams().height > 0 ? imageView
+						.getLayoutParams().height : DEFAULT_HEIGHT, isCache,
+				null);
 	}
 
 	public void loadLocal(View view, int resource) {
@@ -180,10 +200,10 @@ public class ImageLoader {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeResource(resources, resource, options);
-		if(width!=0&&height!=0)
-		options.inSampleSize = options.outWidth / width >= options.outHeight
-				/ height ? options.outWidth / width : options.outHeight
-				/ height;
+		if (width != 0 && height != 0)
+			options.inSampleSize = options.outWidth / width >= options.outHeight
+					/ height ? options.outWidth / width : options.outHeight
+					/ height;
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeResource(resources, resource,
 				options);
