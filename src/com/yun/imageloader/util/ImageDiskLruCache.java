@@ -14,13 +14,13 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.yun.imageloader.BuildConfig;
+import com.example.httpbase.BuildConfig;
 
 public class ImageDiskLruCache {
 
 	private DiskLruCache mDiskCache;
 	private CompressFormat mCompressFormat = CompressFormat.JPEG;
-	private static int IO_BUFFER_SIZE = 8 * 1024;
+	private static int IO_BUFFER_SIZE = 4 * 1024 * 1024;
 	private int mCompressQuality = 70;
 	private static final int APP_VERSION = 1;
 	private static final int VALUE_COUNT = 1;
@@ -54,6 +54,9 @@ public class ImageDiskLruCache {
 	}
 
 	public void putBitmap(String key, Bitmap data) {
+		if (data == null) {
+			return;
+		}
 
 		DiskLruCache.Editor editor = null;
 		key = DiskCacheUtil.MD5(key);
