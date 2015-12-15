@@ -47,19 +47,19 @@ public class LoadRunnable implements Runnable {
 				final Bitmap bitmap = new ImageDownLoad().downLoad(url, width,
 						height);
 				if (bitmap != null) {
-					NativeImageLoader.getInstance().addBitmapToMemoryCache(url,
-							bitmap);
+					NativeImageLoader.getInstance().addBitmapToMemoryCache(
+							url + width + "*" + height, bitmap);
 					if (isCache) {
 						Message message = handler.obtainMessage();
-						message.obj = url;
+						message.obj = url + width + "*" + height;
 						handler.sendMessage(message);
 					}
 				}
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
-						if (bitmap == null && errorImage != null) {
-						       if (errorImage != null)
+						if (bitmap == null) {
+							if (errorImage != null)
 								imageView.setImageDrawable(errorImage);
 							else if (defaultBackround != 0)
 								imageView.setImageResource(defaultBackround);
@@ -86,7 +86,8 @@ public class LoadRunnable implements Runnable {
 					/ height;
 			options.inJustDecodeBounds = false;
 			bitmap = BitmapFactory.decodeFile(url, options);
-			NativeImageLoader.getInstance().addBitmapToMemoryCache(url, bitmap);
+			NativeImageLoader.getInstance().addBitmapToMemoryCache(
+					url + width + "*" + height, bitmap);
 			handler.post(new Runnable() {
 				@Override
 				public void run() {
