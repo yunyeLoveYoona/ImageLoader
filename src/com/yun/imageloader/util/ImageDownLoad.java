@@ -40,7 +40,7 @@ public class ImageDownLoad {
 						options.inJustDecodeBounds = true;
 						BitmapFactory.decodeByteArray(data, 0, data.length,
 								options);
-					if (options.outWidth > width
+						if (options.outWidth > width
 								&& options.outHeight > height
 								&& (width != 0 && height != 0)) {
 							options.inSampleSize = options.outWidth / width >= options.outHeight
